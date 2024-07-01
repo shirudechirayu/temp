@@ -41,8 +41,6 @@ DoublyCLL :: DoublyCLL()
 
 void DoublyCLL :: display()
 {
-    PNODE temp = first;
-
     if(first == NULL && last == NULL)
     {
         return;
@@ -51,10 +49,10 @@ void DoublyCLL :: display()
     cout << "<=> ";
     do
     {
-        cout << "| " << temp->data <<" | <=> ";
-        temp = temp->next;
+        cout << "| " << first->data <<" | <=> ";
+        first = first->next;
     }
-    while(temp != last->next);
+    while(first != last->next);
 
     cout << endl;
 }
@@ -79,13 +77,13 @@ void DoublyCLL :: insertFirst(int no)
     }
     else
     {
-        first->prev = newn;
-        last->next = newn;
         newn->next = first;
         newn->prev = last;
         first = newn;
     }
 
+    first->prev = last;
+    last->next = first;
     iCount++;
 }
 
@@ -103,13 +101,13 @@ void DoublyCLL :: insertLast(int no)
     }
     else
     {
-        first->prev = newn;
         last->next = newn;
-        newn->next = first;
         newn->prev = last;
         last = newn;
     }
 
+    first->prev = last;
+    last->next = first;
     iCount++;
 }
 
@@ -117,6 +115,7 @@ void DoublyCLL :: insertAtPos(int no,int iPos)
 {
     PNODE temp = first;
     PNODE newn = NULL;
+    int i = 0;
 
     if(iPos < 1 || iPos > iCount + 1)
     {
@@ -138,8 +137,6 @@ void DoublyCLL :: insertAtPos(int no,int iPos)
         newn->next = NULL;
         newn->prev = NULL;
 
-        int i = 0;
-
         for(i = 1; i < iPos - 1; i++)
         {
             temp = temp->next;
@@ -156,7 +153,6 @@ void DoublyCLL :: insertAtPos(int no,int iPos)
 
 void DoublyCLL :: deleteFirst()
 {
-
     if(first == NULL && last == NULL)
     {
         cout << "List is empty\n";
@@ -167,8 +163,6 @@ void DoublyCLL :: deleteFirst()
         delete first;
         first = NULL;
         last = NULL;
-
-        iCount--;
     }
     else
     {
@@ -177,15 +171,13 @@ void DoublyCLL :: deleteFirst()
         delete first;
 
         first = last->next;
-
-        iCount--;
     }
+
+    iCount--;
 }
 
 void DoublyCLL :: deleteLast()
 {
-    PNODE temp = first;
-
     if(first == NULL && last == NULL)
     {
         cout << "List is empty\n";
@@ -196,24 +188,16 @@ void DoublyCLL :: deleteLast()
         delete first;
         first = NULL;
         last = NULL;
-
-        iCount--;
     }
     else
     {
-        while(temp->next != last)
-        {
-            temp = temp->next;
-        }
-
-        temp->next = first;
-        first->prev = temp;
-        delete last;
-
-        last = temp;
-
-        iCount--;
+        last = last->prev;
+        delete first->prev;
+        last->next = first;
+        first->prev = last;
     }
+
+    iCount--;
 }
 
 void DoublyCLL :: deleteAtPos(int iPos)
